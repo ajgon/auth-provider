@@ -1,0 +1,2 @@
+class Linkedin < Provider
+end

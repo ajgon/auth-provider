@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  devise :omniauthable, omniauth_providers: [:google_oauth2, :facebook]
+  devise :omniauthable, omniauth_providers: Rails.configuration.omniauth_providers.keys.map(&:to_sym)
 
   has_many :applications
 

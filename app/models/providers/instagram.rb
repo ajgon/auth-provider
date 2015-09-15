@@ -1,0 +1,2 @@
+class Instagram < Provider
+end

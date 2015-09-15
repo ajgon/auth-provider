@@ -1,0 +1,2 @@
+class Github < Provider
+end

@@ -7,3 +7,20 @@ facebook:
   params:
     scope: public_profile,email
     info_fields: email,name
+
+twitter:
+  enabled: true
+  params: {}
+
+github:
+  enabled: true
+  params:
+    scope: user:email
+
+instagram:
+  enabled: true
+  params: {}
+
+linkedin:
+  enabled: true
+  params: {}

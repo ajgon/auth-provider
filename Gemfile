@@ -1,4 +1,4 @@
-source 'http://gems.mpiricans.com'
+source 'https://rubygems.org/'
 
 ruby '2.2.2'
 
@@ -12,6 +12,10 @@ gem 'doorkeeper'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-facebook'
+gem 'omniauth-twitter'
+gem 'omniauth-github'
+gem 'omniauth-instagram'
+gem 'omniauth-linkedin-oauth2'
 
 gem 'stringex'
 
