@@ -1,0 +1,22 @@
+Metrics/LineLength:
+  Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Exclude:
+    - 'db/migrate/*.rb'
+Metrics/AbcSize:
+  Max: 55
+  Exclude:
+    - 'spec/**/*.rb'
+Style/ModuleFunction:
+  Enabled: false
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'config/initializers/azure_paperclip.rb'

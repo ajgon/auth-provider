@@ -1,0 +1,20 @@
+linters:
+  LineLength:
+    enabled: true
+    max: 120
+  RuboCop:
+    enabled: true
+    ignored_cops:
+      - Lint/BlockAlignment
+      - Lint/EndAlignment
+      - Lint/Void
+      - Metrics/BlockNesting
+      - Metrics/LineLength
+      - Style/AlignHash
+      - Style/AlignParameters
+      - Style/FileName
+      - Style/IfUnlessModifier
+      - Style/IndentationWidth
+      - Style/Next
+      - Style/TrailingWhitespace
+      - Style/WhileUntilModifier

@@ -1,0 +1,9 @@
+- if user_signed_in?
+  %p User: #{current_user.email}
+%ul
+  - Application.all.each do |app|
+    %li
+      = app.name
+      - app.providers.each do |provider|
+        = link_to "Sign in with #{provider.type}",
+        user_omniauth_authorize_url(provider.type.underscore.to_sym, host: "#{app.slug}.#{request.domain}")

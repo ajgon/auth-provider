@@ -1,0 +1,9 @@
+google_oauth2:
+  enabled: true
+  params: {}
+
+facebook:
+  enabled: true
+  params:
+    scope: public_profile,email
+    info_fields: email,name

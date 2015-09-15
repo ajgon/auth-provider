@@ -1,0 +1,65 @@
+PreCommit:
+  ALL:
+    on_warn: fail # Treat all warnings as failures
+    exclude:
+      - 'app/assets/javascripts/libs/**/*.js'
+  AuthorEmail:
+    enabled: true
+    required: false
+  AuthorName:
+    enabled: true
+    required: false
+  Brakeman:
+    enabled: true
+  BrokenSymlinks:
+    enabled: true
+  BundleCheck:
+    enabled: true
+  CaseConflicts:
+    enabled: true
+  EsLint:
+    enabled: true
+  HamlLint:
+    enabled: true
+  HardTabs:
+    enabled: true
+    exclude:
+      - '**/*.svg'
+      - '**/*.json'
+  ImageOptim:
+    enabled: true
+  JsHint:
+    enabled: true
+  JsLint:
+    enabled: false
+  Jscs:
+    enabled: true
+  Jsl:
+    enabled: true
+  JsonSyntax:
+    enabled: true
+  LocalPathsInGemfile:
+    enabled: true
+  MergeConflicts:
+    enabled: true
+  RuboCop:
+    enabled: true
+    flags: ['--format=emacs', '--force-exclusion', '--display-cop-names', '--rails']
+  ScssLint:
+    enabled: true
+  SemiStandard:
+    enabled: false
+  ShellCheck:
+    enabled: true
+  Standard:
+    enabled: false
+  TrailingWhitespace:
+    enabled: true
+    exclude:
+      - '**/*.svg'
+  XmlLint:
+    enabled: true
+  XmlSyntax:
+    enabled: true
+  YamlSyntax:
+    enabled: true

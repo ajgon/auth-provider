@@ -1,0 +1,10 @@
+!!! 5
+/[if IE 8 ]    <html lang="en" class="no-js ie8 oldie">
+/[if IE 9 ]    <html lang="en" class="no-js ie9 oldie">
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+%head
+  %title Auth
+  = stylesheet_link_tag 'application', media: 'all'
+  = csrf_meta_tags
+%body
+  = yield
