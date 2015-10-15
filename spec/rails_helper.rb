@@ -58,16 +58,12 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.before(:suite) do
-    begin
-      DatabaseCleaner.start
-      DatabaseCleaner.strategy = :truncation
-      OmniAuth.config.test_mode = true
-      FactoryGirl.lint
-      DatabaseCleaner.clean
-      Auth::Application.load_tasks
-      Rake::Task['db:seed'].invoke
-    rescue
-      DatabaseCleaner.clean
-    end
+    DatabaseCleaner.start
+    DatabaseCleaner.strategy = :truncation
+    OmniAuth.config.test_mode = true
+    FactoryGirl.lint
+    DatabaseCleaner.clean
+    Auth::Application.load_tasks
+    Rake::Task['db:seed'].invoke
   end
 end

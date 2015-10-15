@@ -6,12 +6,12 @@ RSpec.describe Application, type: :model do
   end
 
   it 'should find application basing on callback' do
-    app1 = create(:application)
-    app2 = create(:application)
-    app3 = create(:application)
-    app4 = create(:application)
-    app5 = create(:application)
-    app6 = create(:application)
+    app1 = create(:application, :no_owner)
+    app2 = create(:application, :no_owner)
+    app3 = create(:application, :no_owner)
+    app4 = create(:application, :no_owner)
+    app5 = create(:application, :no_owner)
+    app6 = create(:application, :no_owner)
 
     app1.update(allowed_cors: 'http://test1.com')
     app2.update(allowed_cors: 'http://test2.com')
@@ -45,9 +45,22 @@ RSpec.describe Application, type: :model do
   end
 
   it 'should clean up callback urls' do
-    app = create(:application)
+    app = create(:application, :no_owner)
     app.update(allowed_cors: ',url,     url, sdf sdsf url, sdf,a, f,')
 
     expect(app.allowed_cors).to eq 'url, url, sdf sdsf url, sdf, a, f'
+
+    app.destroy
+  end
+
+  it 'should add owner to mappings' do
+    app = create(:application, :no_owner)
+    user = create(:user)
+    app.update(owner: user)
+
+    expect(app.users).to eq [user]
+
+    app.destroy
+    user.destroy
   end
 end

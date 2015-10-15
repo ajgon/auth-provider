@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014170536) do
+ActiveRecord::Schema.define(version: 20151015123642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,20 +44,28 @@ ActiveRecord::Schema.define(version: 20151014170536) do
   add_index "oauth_access_tokens", ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", using: :btree
   add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
 
+  create_table "oauth_application_users", force: :cascade do |t|
+    t.integer  "oauth_application_id", null: false
+    t.integer  "user_id",              null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "oauth_application_users", ["oauth_application_id", "user_id"], name: "oauth_application_id_and_user_id", unique: true, using: :btree
+
   create_table "oauth_applications", force: :cascade do |t|
-    t.string   "name",                                  null: false
-    t.string   "uid",                                   null: false
-    t.string   "secret",                                null: false
-    t.text     "redirect_uri",                          null: false
-    t.string   "scopes",                default: "",    null: false
+    t.string   "name",                         null: false
+    t.string   "uid",                          null: false
+    t.string   "secret",                       null: false
+    t.text     "redirect_uri",                 null: false
+    t.string   "scopes",       default: "",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.text     "allowed_callback_urls"
     t.text     "allowed_cors"
     t.string   "slug"
-    t.boolean  "base",                  default: false, null: false
+    t.boolean  "base",         default: false, null: false
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree

@@ -20,8 +20,21 @@ RSpec.describe LoginController, type: :controller do
   context 'first step of verification' do
     it 'should return invalid user error if wrong credentials' do
       expect do
-        post :index, user: { email: 'wrong@email.com', password: 'wrong password' }
+        post :index, user: { email: 'wrong@email.com', password: 'wrong password' },
+                     client_id: @app.uid, redirect_uri: @app.redirect_uri
       end.to raise_error(UncaughtThrowError, 'uncaught throw :warden')
+    end
+
+    it 'should return invalid user error if user does not belong to the application' do
+      user = create(:user)
+
+      post :index, user: { email: user.email, password: 'testtest' },
+                   client_id: @app.uid, redirect_uri: @app.redirect_uri
+
+      expect(response.status).to eq 401
+      expect(JSON.parse(response.body)).to eq('error' => 'Invalid email or password.')
+
+      user.destroy
     end
 
     it 'should throw error if no client_id and redirect_uri provided' do

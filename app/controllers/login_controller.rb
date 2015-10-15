@@ -7,13 +7,12 @@ class LoginController < Devise::SessionsController
 
   def index
     params[:response_type] ||= 'code'
-    handle_devise_authentication
 
-    if pre_auth.authorizable?
-      render :index
-    else
-      fail pre_auth.error_response.body.to_s
-    end
+    fail pre_auth.error_response.body.to_s unless pre_auth.authorizable?
+    return if validates_devise_authentication?
+
+    render json: { error: I18n.t('devise.failure.not_found_in_database', authentication_keys: 'email') },
+           status: :unauthorized
   end
 
   def authorize
@@ -33,10 +32,13 @@ class LoginController < Devise::SessionsController
 
   private
 
-  def handle_devise_authentication
+  def validates_devise_authentication?
     allow_params_authentication!
     resource = warden.authenticate!(auth_options)
-    sign_in(resource_name, resource)
+    return true if Application.joins(:users).find_by(id: server.client_via_uid.application.id).users.include?(resource)
+
+    warden.logout(:user)
+    false
   end
 
   def auth_options
