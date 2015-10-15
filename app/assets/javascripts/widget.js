@@ -1,12 +1,10 @@
 (function () {
     // jscs: disable
-    // jshint ignore:start
     // form serialize
-    function serialize(form){if(!form||form.nodeName!=="FORM"){return }var i,j,q=[];for(i=form.elements.length-1;i>=0;i=i-1){if(form.elements[i].name===""){continue}switch(form.elements[i].nodeName){case"INPUT":switch(form.elements[i].type){case"text":case"hidden":case"password":case"button":case"reset":case"submit":case"email":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"checkbox":case"radio":if(form.elements[i].checked){q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value))}break;case"file":break}break;case"TEXTAREA":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"SELECT":switch(form.elements[i].type){case"select-one":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"select-multiple":for(j=form.elements[i].options.length-1;j>=0;j=j-1){if(form.elements[i].options[j].selected){q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].options[j].value))}}break}break;case"BUTTON":switch(form.elements[i].type){case"reset":case"submit":case"button":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break}break}}return q.join("&")};
+    function serialize(form){if(!form||form.nodeName!=="FORM"){return }var i,j,q=[];for(i=form.elements.length-1;i>=0;i=i-1){if(form.elements[i].name===""){continue}switch(form.elements[i].nodeName){case"INPUT":switch(form.elements[i].type){case"text":case"hidden":case"password":case"button":case"reset":case"submit":case"email":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"checkbox":case"radio":if(form.elements[i].checked){q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value))}break;case"file":break}break;case"TEXTAREA":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"SELECT":switch(form.elements[i].type){case"select-one":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break;case"select-multiple":for(j=form.elements[i].options.length-1;j>=0;j=j-1){if(form.elements[i].options[j].selected){q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].options[j].value))}}break}break;case"BUTTON":switch(form.elements[i].type){case"reset":case"submit":case"button":q.push(form.elements[i].name+"="+encodeURIComponent(form.elements[i].value));break}break}}return q.join("&")}; // jshint ignore:line
 
     // nanoajax
-    !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}t.nanoajax=e;var r=["responseType","withCredentials","timeout","onprogress"];e.ajax=function(e,t){function u(e,n){return function(){d||t(c.status||e,c.response||c.responseText||n,c),d=!0}}var a=e.headers||{},s=e.body,i=e.method||(s?"POST":"GET"),d=!1,c=n(e.cors);c.open(i,e.url,!0);var l=c.onload=u(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=u(null,"Error"),c.ontimeout=u(null,"Timeout"),c.onabort=u(null,"Abort"),s&&(o(a,"X-Requested-With","XMLHttpRequest"),o(a,"Content-Type","application/x-www-form-urlencoded"));for(var p,f=0,v=r.length;v>f;f++)p=r[f],void 0!==e[p]&&(c[p]=e[p]);for(var p in a)c.setRequestHeader(p,a[p]);return c.send(s),c}}({},function(){return this}());
-    // jshint ignore:end
+    !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}t.nanoajax=e;var r=["responseType","withCredentials","timeout","onprogress"];e.ajax=function(e,t){function u(e,n){return function(){d||t(c.status||e,c.response||c.responseText||n,c),d=!0}}var a=e.headers||{},s=e.body,i=e.method||(s?"POST":"GET"),d=!1,c=n(e.cors);c.open(i,e.url,!0);var l=c.onload=u(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=u(null,"Error"),c.ontimeout=u(null,"Timeout"),c.onabort=u(null,"Abort"),s&&(o(a,"X-Requested-With","XMLHttpRequest"),o(a,"Content-Type","application/x-www-form-urlencoded"));for(var p,f=0,v=r.length;v>f;f++)p=r[f],void 0!==e[p]&&(c[p]=e[p]);for(var p in a)c.setRequestHeader(p,a[p]);return c.send(s),c}}({},function(){return this}()); // jshint ignore:line
     // jscs: enable
 
     (function () {
@@ -41,7 +39,6 @@
             _applyOptions: function (options) {
                 var o;
                 this.options = {
-                    _local: false,
                     namespace: 'auth-provider',
                     signIn: {
                         template: signInTemplate
@@ -53,13 +50,20 @@
                         this.options[o] = options[o];
                     }
                 }
+                if (!this.options.domain) {
+                    throw 'Missing "domain" parameter!';
+                }
+                if (!this.options.callbackURL) {
+                    throw 'Missing "callbackURL" parameter!';
+                }
+                if (!this.options.clientID) {
+                    throw 'Missing "clientID" parameter!';
+                }
             },
             _initDOM: function () {
                 var parentTag = this._ns('widget'), parent;
                 if (!document.querySelector('body > ' + parentTag)) {
                     parent = document.createElement(parentTag);
-                    //parent.setAttribute('xmlns:' + this.options.namespace, 'http://www.w3.org/1999/xhtml');
-                    parent.setAttribute('xmlns:dupa', 'http://www.w3.org/1999/xhtml');
                     this.container = document.body.appendChild(parent);
                 }
             },
@@ -69,9 +73,12 @@
                     if (e.target.getAttribute('id') === self._ns('sign-in-form')) {
                         e.preventDefault();
                         self._ajax({
-                            url: '/users/sign_in',
+                            url: '/login/usernamepassword',
                             method: 'POST',
-                            body: serialize(e.target)
+                            body: serialize(e.target) + '&client_id=' + self.options.clientID +
+                                  '&redirect_uri=' + self.options.callbackURL,
+                            cors: true,
+                            withCredentials: true
                         });
                     }
                 });
@@ -86,28 +93,31 @@
                 return this.options.namespace + '-' + item;
             },
             _ajax: function (options) {
-                var callback, self = this;
+                var callback, dummy, self = this;
                 this._loading(true);
                 options.headers = options.headers || {};
                 options.success = options.success || function () {};
                 options.error = options.error || this._ajaxError;
+                options.url = 'http://' + this.options.domain + options.url;
                 if (!options.headers.Accept) {
                     options.headers.Accept = 'application/json, */*';
                 }
-                if (this.options._local) {
-                    options.headers['X-CSRF-Token'] =
-                        document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                }
-                callback = function (status, response) {
-                    response = JSON.parse(response);
-                    if (response.location) {
-                        window.location.href = response.location;
-                        return;
+                callback = function (status, response, xhr) {
+                    if (xhr.getResponseHeader('Content-Type').match(/text\/html/)) {
+                        dummy = document.createElement('div');
+                        dummy.innerHTML = response;
+                        dummy.firstChild.submit();
+                    } else {
+                        response = JSON.parse(response);
+                        if (response.location) {
+                            window.location.href = response.location;
+                            return;
+                        }
+                        if (status < 300) {
+                            return options.success.call(self, response);
+                        }
+                        return options.error.call(self, response);
                     }
-                    if (status < 300) {
-                        return options.success.call(self, response);
-                    }
-                    return options.error.call(self, response);
                 };
                 nanoajax.ajax(options, callback);
             },

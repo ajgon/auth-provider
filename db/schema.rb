@@ -11,20 +11,57 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150915102117) do
+ActiveRecord::Schema.define(version: 20151014170536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "applications", force: :cascade do |t|
-    t.integer  "user_id"
-    t.string   "name",       null: false
-    t.string   "slug"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table "oauth_access_grants", force: :cascade do |t|
+    t.integer  "resource_owner_id", null: false
+    t.integer  "application_id",    null: false
+    t.string   "token",             null: false
+    t.integer  "expires_in",        null: false
+    t.text     "redirect_uri",      null: false
+    t.datetime "created_at",        null: false
+    t.datetime "revoked_at"
+    t.string   "scopes"
   end
 
-  add_index "applications", ["user_id"], name: "index_applications_on_user_id", using: :btree
+  add_index "oauth_access_grants", ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
+
+  create_table "oauth_access_tokens", force: :cascade do |t|
+    t.integer  "resource_owner_id"
+    t.integer  "application_id"
+    t.string   "token",             null: false
+    t.string   "refresh_token"
+    t.integer  "expires_in"
+    t.datetime "revoked_at"
+    t.datetime "created_at",        null: false
+    t.string   "scopes"
+  end
+
+  add_index "oauth_access_tokens", ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, using: :btree
+  add_index "oauth_access_tokens", ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", using: :btree
+  add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
+
+  create_table "oauth_applications", force: :cascade do |t|
+    t.string   "name",                                  null: false
+    t.string   "uid",                                   null: false
+    t.string   "secret",                                null: false
+    t.text     "redirect_uri",                          null: false
+    t.string   "scopes",                default: "",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.text     "allowed_callback_urls"
+    t.text     "allowed_cors"
+    t.string   "slug"
+    t.boolean  "base",                  default: false, null: false
+  end
+
+  add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
+  add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
   create_table "providers", force: :cascade do |t|
     t.string   "type"
@@ -37,6 +74,16 @@ ActiveRecord::Schema.define(version: 20150915102117) do
   end
 
   add_index "providers", ["application_id"], name: "index_providers_on_application_id", using: :btree
+
+  create_table "sessions", force: :cascade do |t|
+    t.string   "session_id", null: false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

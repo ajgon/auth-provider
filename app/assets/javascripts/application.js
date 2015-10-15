@@ -12,4 +12,3 @@
 //
 //= require_self
 //= require widget
-//= require app

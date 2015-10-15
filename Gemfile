@@ -15,6 +15,7 @@ gem 'omniauth-github'
 gem 'omniauth-instagram'
 gem 'omniauth-linkedin-oauth2'
 
+gem 'rack-cors'
 gem 'stringex'
 
 group :development, :test do

@@ -1,3 +1,9 @@
 after 'development:users' do
-  Application.create!(name: 'Test App', user: User.find_by_email('admin@example.com'))
+  app = Application.new(
+    name: 'Test App',
+    redirect_uri: 'https://test-app.auth.dev',
+    base: false
+  )
+  app.owner = User.find_by_email('testapp@example.com')
+  app.save!
 end

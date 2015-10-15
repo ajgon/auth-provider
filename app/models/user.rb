@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   devise :omniauthable, omniauth_providers: Rails.configuration.omniauth_providers.keys.map(&:to_sym)
 
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner
   has_many :applications
 
   def self.from_omniauth(auth)

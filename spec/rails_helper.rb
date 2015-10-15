@@ -63,7 +63,10 @@ RSpec.configure do |config|
       DatabaseCleaner.strategy = :truncation
       OmniAuth.config.test_mode = true
       FactoryGirl.lint
-    ensure
+      DatabaseCleaner.clean
+      Auth::Application.load_tasks
+      Rake::Task['db:seed'].invoke
+    rescue
       DatabaseCleaner.clean
     end
   end
