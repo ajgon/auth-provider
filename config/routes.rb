@@ -9,4 +9,12 @@ Rails.application.routes.draw do
     post '/login/usernamepassword' => 'login#index', as: 'login'
     post '/login/authorize' => 'login#authorize', as: 'login_authorize'
   end
+
+  namespace :api do
+    namespace :v1 do
+      get '/users/me' => 'users#me'
+    end
+  end
+
+  get '/userinfo' => 'api/v1/users#me'
 end

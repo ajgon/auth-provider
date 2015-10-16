@@ -76,7 +76,8 @@
                             url: '/login/usernamepassword',
                             method: 'POST',
                             body: serialize(e.target) + '&client_id=' + self.options.clientID +
-                                  '&redirect_uri=' + self.options.callbackURL,
+                                  '&redirect_uri=' + self.options.callbackURL +
+                                  (self.options.state ? '&state=' + self.options.state : ''),
                             cors: true,
                             withCredentials: true
                         });

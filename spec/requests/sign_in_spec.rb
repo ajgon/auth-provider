@@ -1,8 +1,80 @@
 require 'rails_helper'
 
 RSpec.describe 'sign in', type: :request do
+  include Warden::Test::Helpers
+  Warden.test_mode!
+
   before(:each) do
     Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+  end
+
+  after(:each) do
+    Warden.test_reset!
+  end
+
+  # AuthProvider itself
+  context '#authprovider (self)' do
+    it 'step1 /login/usernamepassword' do
+      # OmniAuth.config.mock_auth[:auth_provider] =
+      #     OmniAuth::AuthHash.new(
+      #         provider: 'auth_provider',
+      #         uid: '123456'
+      #     )
+      # Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:auth_provider]
+
+      app = create(:application)
+      user = app.owner
+
+      post login_url, user: { email: user.email, password: 'testtest' },
+                      client_id: app.uid, redirect_uri: app.redirect_uri, state: 'dummy_state'
+
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.css('form').first.attr('action')).to match(%r{/login/authorize$})
+      expect(doc.css('[name="client_id"]').first.attr('value')).to eq app.uid
+      expect(doc.css('[name="redirect_uri"]').first.attr('value')).to eq app.redirect_uri
+      expect(doc.css('[name="state"]').first.attr('value')).to eq 'dummy_state'
+      expect(doc.css('[name="response_type"]').first.attr('value')).to eq 'code'
+      expect(doc.css('[name="scope"]').first.attr('value')).to eq 'public'
+      expect(request.env['warden'].user).to eq user
+
+      app.destroy
+      user.destroy
+    end
+
+    it 'step2 /login/authorize' do
+      app = create(:application)
+      user = app.owner
+      login_as user, scope: :user
+
+      post login_authorize_url, client_id: app.uid, redirect_uri: app.redirect_uri, state: 'dummy_state',
+                                response_type: 'code', scope: 'public'
+
+      expect(response.headers['Location']).to match(/^#{app.redirect_uri}\?code=[0-9a-f]{64}\&state=dummy_state$/)
+      expect(request.env['warden'].user).to be_falsey
+
+      app.destroy
+      user.destroy
+    end
+
+    it 'step3 #callback' do
+      user = create(:user)
+      OmniAuth.config.mock_auth[:auth_provider] =
+        OmniAuth::AuthHash.new(
+          provider: 'auth_provider',
+          uid: '123456',
+          info: {
+            email: user.email
+          }
+        )
+      Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:auth_provider]
+
+      get user_omniauth_callback_url(:auth_provider)
+
+      expect(response).to redirect_to root_path
+
+      OmniAuth.config.mock_auth[:auth_provider] = nil
+      user.destroy
+    end
   end
 
   # OAuth2

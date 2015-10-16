@@ -1,7 +1,7 @@
 class OmniauthController < ApplicationController
   # rubocop:disable Metrics/MethodLength
   def setup
-    app = Application.find_by_slug(request.subdomains.first)
+    app = request.subdomains.first ? Application.find_by_slug(request.subdomains.first) : Application.base
     if app.present?
       provider = app.providers.find_by(type: params[:provider].classify)
       if provider.present? && provider.enabled?

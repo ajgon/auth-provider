@@ -14,6 +14,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-instagram'
 gem 'omniauth-linkedin-oauth2'
+gem 'omniauth-authprovider', path: '../omniauth-authprovider'
 
 gem 'rack-cors'
 gem 'stringex'

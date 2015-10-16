@@ -1,6 +1,11 @@
+auth_provider:
+  enabled: true
+  params:
+    namespace: 'auth.dev'
+    provider_ignores_state: false
+
 google_oauth2:
   enabled: true
-  params: {}
 
 facebook:
   enabled: true
@@ -10,7 +15,6 @@ facebook:
 
 twitter:
   enabled: true
-  params: {}
 
 github:
   enabled: true
@@ -19,8 +23,6 @@ github:
 
 instagram:
   enabled: true
-  params: {}
 
 linkedin:
   enabled: true
-  params: {}

@@ -8,12 +8,12 @@
   = csrf_meta_tags
 %body
   = yield
-
   = javascript_include_tag 'application'
   :javascript
     var widget = new AuthProviderWidget({
       domain: '#{Application.base.slug}.auth.dev',
       clientID: '#{Application.base.uid}',
-      callbackURL: 'http://auth.dev/authprovider/callback'
+      callbackURL: '#{user_omniauth_callback_url(:auth_provider)}',
+      state: '#{session['omniauth.state'] ||= SecureRandom.hex(24)}'
     });
     widget.signin();

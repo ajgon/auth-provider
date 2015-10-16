@@ -1,0 +1,2 @@
+class AuthProvider < Provider
+end
