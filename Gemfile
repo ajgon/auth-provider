@@ -14,10 +14,11 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-instagram'
 gem 'omniauth-linkedin-oauth2'
-gem 'omniauth-authprovider', path: '../omniauth-authprovider'
+gem 'omniauth-auth_provider', github: 'ajgon/omniauth-auth_provider'
 
 gem 'rack-cors'
 gem 'stringex'
+gem 'has_secure_token'
 
 group :development, :test do
   gem 'rspec'

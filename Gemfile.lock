@@ -1,7 +1,8 @@
-PATH
-  remote: ../omniauth-authprovider
+GIT
+  remote: git://github.com/ajgon/omniauth-auth_provider.git
+  revision: 9b145295a8da0249adee23d7563b4e98c025000c
   specs:
-    omniauth-authprovider (1.0.0)
+    omniauth-auth_provider (1.0.0)
       omniauth-oauth2
 
 GEM
@@ -77,7 +78,7 @@ GEM
       method_source (~> 0.8, >= 0.8.2)
     coderay (1.1.0)
     daemons (1.2.3)
-    database_cleaner (1.5.0)
+    database_cleaner (1.5.1)
     debug_inspector (0.0.2)
     debugging (1.1.0)
       binding.repl (~> 3.0)
@@ -127,6 +128,8 @@ GEM
       haml (~> 4.0)
       rubocop (>= 0.25.0)
       sysexits (~> 1.1)
+    has_secure_token (1.0.0)
+      activerecord (>= 3.0)
     hashie (3.4.2)
     highline (1.7.8)
     hirb (0.7.3)
@@ -365,10 +368,11 @@ DEPENDENCIES
   gemsurance
   haml
   haml-lint
+  has_secure_token
   image_optim
   irbtools-more
   omniauth
-  omniauth-authprovider!
+  omniauth-auth_provider!
   omniauth-facebook
   omniauth-github
   omniauth-google-oauth2

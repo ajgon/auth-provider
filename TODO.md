@@ -1,0 +1,1 @@
+* Add accepted_cors support for token authentication

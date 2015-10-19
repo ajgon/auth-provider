@@ -15,13 +15,6 @@ RSpec.describe 'sign in', type: :request do
   # AuthProvider itself
   context '#authprovider (self)' do
     it 'step1 /login/usernamepassword' do
-      # OmniAuth.config.mock_auth[:auth_provider] =
-      #     OmniAuth::AuthHash.new(
-      #         provider: 'auth_provider',
-      #         uid: '123456'
-      #     )
-      # Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:auth_provider]
-
       app = create(:application)
       user = app.owner
 
@@ -41,7 +34,7 @@ RSpec.describe 'sign in', type: :request do
       user.destroy
     end
 
-    it 'step2 /login/authorize' do
+    it 'step2 /login/authorize (code)' do
       app = create(:application)
       user = app.owner
       login_as user, scope: :user
@@ -50,6 +43,22 @@ RSpec.describe 'sign in', type: :request do
                                 response_type: 'code', scope: 'public'
 
       expect(response.headers['Location']).to match(/^#{app.redirect_uri}\?code=[0-9a-f]{64}\&state=dummy_state$/)
+      expect(request.env['warden'].user).to be_falsey
+
+      app.destroy
+      user.destroy
+    end
+
+    it 'step2 /login/authorize (token)' do
+      app = create(:application)
+      user = app.owner
+      login_as user, scope: :user
+
+      post login_authorize_url, client_id: app.uid, redirect_uri: app.redirect_uri, state: 'dummy_state',
+                                response_type: 'token', scope: 'public'
+
+      expect(response.headers['Location'])
+        .to match(/^#{app.redirect_uri}#access_token=[0-9a-f]{64}&token_type=bearer&expires_in=7200&state=dummy_state$/)
       expect(request.env['warden'].user).to be_falsey
 
       app.destroy
@@ -71,6 +80,7 @@ RSpec.describe 'sign in', type: :request do
       get user_omniauth_callback_url(:auth_provider)
 
       expect(response).to redirect_to root_path
+      expect(request.env['warden'].user).to eq user
 
       OmniAuth.config.mock_auth[:auth_provider] = nil
       user.destroy

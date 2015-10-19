@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 
   has_many :oauth_application_users, dependent: :destroy
   has_many :applications, through: :oauth_application_users
+  has_secure_token :client_id
 
   def self.from_omniauth(auth)
     where(email: auth.info.email).first_or_create do |user|
