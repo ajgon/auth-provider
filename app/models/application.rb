@@ -11,7 +11,7 @@ class Application < Doorkeeper::Application
   scope :with_allowed_cors, lambda { |callback_url|
     where(
       arel_table[:allowed_cors].matches_any(
-        ["#{callback_url},%", "%, #{callback_url}", "%, #{callback_url},%", callback_url]
+        ["#{callback_url}\n%", "%\n#{callback_url}", "%\n#{callback_url}\n%", callback_url]
       )
     )
   }
@@ -23,7 +23,7 @@ class Application < Doorkeeper::Application
   protected
 
   def clean_allowed_cors
-    self.allowed_cors = allowed_cors.to_s.split(',').map(&:strip).select(&:present?).join(', ')
+    self.allowed_cors = allowed_cors.to_s.split(/[\r\n]/).map(&:strip).select(&:present?).join("\n")
   end
 
   def ensure_that_owner_is_mapped_through

@@ -16,9 +16,9 @@ RSpec.describe Application, type: :model do
     app1.update(allowed_cors: 'http://test1.com')
     app2.update(allowed_cors: 'http://test2.com')
     app3.update(allowed_cors: 'http://test3.com')
-    app4.update(allowed_cors: 'http://test1.com, http://test2.com')
-    app5.update(allowed_cors: 'http://test1.com, http://test2.com, http://test3.com')
-    app6.update(allowed_cors: 'http://other-test.com, http://test.com, http://inner-test.com')
+    app4.update(allowed_cors: "http://test1.com\nhttp://test2.com")
+    app5.update(allowed_cors: "http://test1.com\nhttp://test2.com\nhttp://test3.com")
+    app6.update(allowed_cors: "http://other-test.com\nhttp://test.com\nhttp://inner-test.com")
 
     expect(Application.with_allowed_cors('http://test1.co')).to be_empty
     expect(Application.with_allowed_cors('ttp://test1.com')).to be_empty
@@ -46,9 +46,9 @@ RSpec.describe Application, type: :model do
 
   it 'should clean up callback urls' do
     app = create(:application, :no_owner)
-    app.update(allowed_cors: ',url,     url, sdf sdsf url, sdf,a, f,')
+    app.update(allowed_cors: "\nurl\n\r     url\r sdf sdsf url\r\n sdf\na\n f\n")
 
-    expect(app.allowed_cors).to eq 'url, url, sdf sdsf url, sdf, a, f'
+    expect(app.allowed_cors).to eq "url\nurl\nsdf sdsf url\nsdf\na\nf"
 
     app.destroy
   end

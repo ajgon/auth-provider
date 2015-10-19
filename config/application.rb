@@ -36,12 +36,14 @@ module Auth
       YAML.load_file(Rails.root.join('config', 'omniauth-providers.yml')).select { |_name, opts| opts['enabled'] }
 
     config.middleware.insert_before 0, 'Rack::Cors' do
+      if_callback = proc do |env|
+        next true if Rack::Utils.parse_nested_query(env['QUERY_STRING'])['response_type'].to_s.downcase == 'code'
+        ::Application.with_allowed_cors(env['HTTP_ORIGIN']).map { |u| "#{u.slug}.auth.dev" }.include?(env['HTTP_HOST'])
+      end
+
       allow do
         origins '*'
-        resource '*', headers: :any, methods: [:get, :post, :delete, :patch], credentials: true
-        # resource '/login/*', headers: :any, methods: [:get, :post, :delete, :patch], credentials: false,
-        #                      if: Proc.new { |env| ::Application.with_allowed_callback_url(env['HTTP_ORIGIN'])
-        #                      .map { |u| "#{u.slug}.auth.dev" }.include?(env['HTTP_HOST']) }
+        resource '/login/*', headers: :any, methods: [:get, :post, :delete, :patch], credentials: true, if: if_callback
       end
     end
   end

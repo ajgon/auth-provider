@@ -22,7 +22,7 @@ RSpec.describe 'sign in', type: :request do
                       client_id: app.uid, redirect_uri: app.redirect_uri, state: 'dummy_state'
 
       doc = Nokogiri::HTML(response.body)
-      expect(doc.css('form').first.attr('action')).to match(%r{/login/authorize$})
+      expect(doc.css('form').first.attr('action')).to match(%r{/login/authorize\?response_type=code$})
       expect(doc.css('[name="client_id"]').first.attr('value')).to eq app.uid
       expect(doc.css('[name="redirect_uri"]').first.attr('value')).to eq app.redirect_uri
       expect(doc.css('[name="state"]').first.attr('value')).to eq 'dummy_state'

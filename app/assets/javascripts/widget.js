@@ -40,6 +40,7 @@
                 var o;
                 this.options = {
                     namespace: 'auth-provider',
+                    responseType: 'code',
                     signIn: {
                         template: signInTemplate
                     }
@@ -73,12 +74,11 @@
                     if (e.target.getAttribute('id') === self._ns('sign-in-form')) {
                         e.preventDefault();
                         self._ajax({
-                            url: '/login/usernamepassword',
+                            url: '/login/usernamepassword?response_type=' + self.options.responseType,
                             method: 'POST',
                             body: serialize(e.target) + '&client_id=' + self.options.clientID +
                                   '&redirect_uri=' + self.options.callbackURL +
-                                  (self.options.state ? '&state=' + self.options.state : '') +
-                                  (self.options.responseType ? '&response_type=' + self.options.responseType : ''),
+                                  (self.options.state ? '&state=' + self.options.state : ''),
                             cors: true,
                             withCredentials: true
                         });
