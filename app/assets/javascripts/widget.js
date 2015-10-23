@@ -32,9 +32,15 @@
             '</:namespace:sign-in>';
 
         AuthProviderWidget.prototype = {
-            signin: function () {
+            signIn: function (options) {
                 this._wipeContainer();
                 this._showTemplate('signIn');
+                if (options.beforeRender) {
+                    options.beforeRender(this.container);
+                }
+            },
+            close: function () {
+                this.container.className = this._ns('hidden');
             },
             _applyOptions: function (options) {
                 var o;
@@ -65,6 +71,7 @@
                 var parentTag = this._ns('widget'), parent;
                 if (!document.querySelector('body > ' + parentTag)) {
                     parent = document.createElement(parentTag);
+                    parent.className = 'auth-provider-hidden';
                     this.container = document.body.appendChild(parent);
                 }
             },
@@ -125,7 +132,11 @@
             },
             _ajaxError: function (response) {
                 this._loading(false);
-                this.container.querySelector(this._ns('message')).textContent = response.error;
+                this._setMessage(response.error);
+            },
+            _setMessage: function (message) {
+                this.container.querySelector(this._ns('message')).textContent = message;
+                this._toggleElement(this.container.querySelector(this._ns('message-container')), true);
             },
             _loading: function (active) {
                 this._toggleElement(this.container.querySelector(this._ns('loading')), active);
@@ -141,16 +152,22 @@
             },
             _showTemplate: function (template) {
                 this.container.innerHTML = this.options[template].template.replace(/:namespace:/g, this._ns());
+                this._toggleElement(this.container.querySelector(this._ns('message-container')), false);
                 this._loading(false);
+                this.container.className = this._ns('visible');
             }
         };
 
         window.AuthProviderWidget = function (options) {
             var self = this;
             this.widget = new AuthProviderWidget(options);
-            this.signin = function () {
-                self.widget.signin.call(self.widget);
+            this.signIn = function (options) {
+                self.widget.signIn.call(self.widget, options);
             };
+            this.close = function () {
+                self.widget.close.call(self.widget);
+            };
+            this.container = self.widget.container;
         };
     })();
 })();
