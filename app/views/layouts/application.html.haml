@@ -16,4 +16,4 @@
       callbackURL: '#{user_omniauth_callback_url(:auth_provider)}',
       state: '#{session['omniauth.state'] ||= SecureRandom.hex(24)}'
     });
-    widget.signin();
+    widget.signIn();

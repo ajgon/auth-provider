@@ -38,7 +38,9 @@ module Auth
     config.middleware.insert_before 0, 'Rack::Cors' do
       if_callback = proc do |env|
         next true if Rack::Utils.parse_nested_query(env['QUERY_STRING'])['response_type'].to_s.downcase == 'code'
-        ::Application.with_allowed_cors(env['HTTP_ORIGIN']).map { |u| "#{u.slug}.auth.dev" }.include?(env['HTTP_HOST'])
+        ::Application.with_allowed_cors(env['HTTP_ORIGIN']).map do |u|
+          "#{u.slug}.#{ActionMailer::Base.default_url_options[:host]}"
+        end.include?(env['HTTP_HOST'])
       end
 
       allow do

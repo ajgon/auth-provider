@@ -76,10 +76,23 @@ RSpec.describe LoginController, type: :controller do
   end
 
   context 'second step of verification' do
-    it 'should redirect to callback url and sign out user' do
+    it 'should redirect to callback url and sign out user when session exists' do
       sign_in :user, @user
 
       post :authorize, client_id: @app.uid, redirect_uri: @app.redirect_uri, response_type: :code, scope: :public
+
+      expect(response.headers['Location']).to match(/^#{@app.redirect_uri}\?code=[0-9a-f]{64}$/)
+      expect(warden.user).to be_falsey
+    end
+
+    it 'should redirect to callback url and sign out user even with broken session (session_data hack)' do
+      post :index, user: { email: @user.email, password: 'testtest' },
+                   client_id: @app.uid, redirect_uri: @app.redirect_uri
+
+      allow(subject).to receive(:current_user) { nil }
+
+      post :authorize, client_id: @app.uid, redirect_uri: @app.redirect_uri, response_type: :code, scope: :public,
+                       session_data: assigns['session_data']
 
       expect(response.headers['Location']).to match(/^#{@app.redirect_uri}\?code=[0-9a-f]{64}$/)
       expect(warden.user).to be_falsey

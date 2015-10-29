@@ -49,7 +49,7 @@ RSpec.describe 'sign in', type: :request do
       user.destroy
     end
 
-    it 'step2 /login/authorize (token)' do
+    it 'step2 /login/authorize (token and cookie)' do
       app = create(:application)
       user = app.owner
       login_as user, scope: :user
@@ -60,6 +60,26 @@ RSpec.describe 'sign in', type: :request do
       expect(response.headers['Location'])
         .to match(/^#{app.redirect_uri}#access_token=[0-9a-f]{64}&token_type=bearer&expires_in=7200&state=dummy_state$/)
       expect(request.env['warden'].user).to be_falsey
+
+      app.destroy
+      user.destroy
+    end
+
+    it 'step2 /login/authorize (token and form param fallback)' do
+      app = create(:application)
+      user = app.owner
+
+      post login_url, user: { email: user.email, password: 'testtest' },
+                      client_id: app.uid, redirect_uri: app.redirect_uri, state: 'dummy_state'
+
+      doc = Nokogiri::HTML(response.body)
+      session_data = doc.css('[name="session_data"]').first.attr('value')
+
+      logout :user
+      post login_authorize_url, client_id: app.uid, redirect_uri: app.redirect_uri, state: 'dummy_state',
+                                response_type: 'token', scope: 'public', session_data: session_data
+
+      expect(User.find(session['warden.user.user.key'].first.first)).to eq user
 
       app.destroy
       user.destroy

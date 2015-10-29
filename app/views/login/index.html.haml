@@ -4,3 +4,4 @@
   = hidden_field_tag :state, @pre_auth.state
   = hidden_field_tag :response_type, (@pre_auth.response_type || 'code')
   = hidden_field_tag :scope, @pre_auth.scope
+  = hidden_field_tag :session_data, @session_data

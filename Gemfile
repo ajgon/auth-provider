@@ -19,6 +19,7 @@ gem 'omniauth-auth_provider', github: 'ajgon/omniauth-auth_provider'
 gem 'rack-cors'
 gem 'stringex'
 gem 'has_secure_token'
+gem 'activerecord-session_store'
 
 group :development, :test do
   gem 'rspec'

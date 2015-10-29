@@ -33,6 +33,7 @@
 
         AuthProviderWidget.prototype = {
             signIn: function (options) {
+                options = options === undefined ? {} : options;
                 this._wipeContainer();
                 this._showTemplate('signIn');
                 if (options.beforeRender) {
@@ -112,10 +113,18 @@
                     options.headers.Accept = 'application/json, */*';
                 }
                 callback = function (status, response, xhr) {
+                    var n;
                     if (xhr.getResponseHeader('Content-Type').match(/text\/html/)) {
                         dummy = document.createElement('div');
                         dummy.innerHTML = response;
-                        dummy.firstChild.submit();
+                        // document.body.appendChild(dummy.firstChild);
+                        for (n = 0; n < dummy.childNodes.length; n += 1) {
+                            if (dummy.childNodes[n].submit) {
+                                dummy.childNodes[n].setAttribute('id', 'auth-provider-widget-form-step-2');
+                                document.body.appendChild(dummy.childNodes[n]);
+                                document.getElementById('auth-provider-widget-form-step-2').submit();
+                            }
+                        }
                     } else {
                         response = JSON.parse(response);
                         if (response.location) {
