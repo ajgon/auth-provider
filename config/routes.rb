@@ -8,13 +8,16 @@ Rails.application.routes.draw do
   devise_scope :user do
     post '/login/usernamepassword' => 'login#index', as: 'login'
     post '/login/authorize' => 'login#authorize', as: 'login_authorize'
+    get '/login/:provider' => 'login#provider', as: 'login_provider'
   end
 
   namespace :api do
     namespace :v1 do
       get '/users/me' => 'users#me'
+      post '/users/widget' => 'users#widget'
     end
   end
 
+  post '/widget' => 'api/v1/users#widget'
   get '/userinfo' => 'api/v1/users#me'
 end

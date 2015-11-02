@@ -18,6 +18,17 @@ class LoginController < Devise::SessionsController
            status: :unauthorized
   end
 
+  def provider
+    session[:proxy] = {
+      response_type: params[:response_type] || 'code',
+      client_id: params[:client_id],
+      redirect_uri: params[:redirect_uri],
+      state: params[:state]
+    }
+
+    redirect_to user_omniauth_authorize_url(params[:provider], host: "#{current_application.slug}.#{request.domain}")
+  end
+
   def authorize
     build_proper_session
     authorization_data = authorization.authorize

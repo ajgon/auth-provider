@@ -1,6 +1,8 @@
 module Api
   module V1
     class ApiController < ApplicationController
+      before_action :doorkeeper_authorize!
+
       protected
 
       def current_resource_owner

@@ -5,6 +5,9 @@
 
     // nanoajax
     !function(e,t){function n(e){return e&&t.XDomainRequest&&!/MSIE 1/.test(navigator.userAgent)?new XDomainRequest:t.XMLHttpRequest?new XMLHttpRequest:void 0}function o(e,t,n){e[t]=e[t]||n}t.nanoajax=e;var r=["responseType","withCredentials","timeout","onprogress"];e.ajax=function(e,t){function u(e,n){return function(){d||t(c.status||e,c.response||c.responseText||n,c),d=!0}}var a=e.headers||{},s=e.body,i=e.method||(s?"POST":"GET"),d=!1,c=n(e.cors);c.open(i,e.url,!0);var l=c.onload=u(200);c.onreadystatechange=function(){4===c.readyState&&l()},c.onerror=u(null,"Error"),c.ontimeout=u(null,"Timeout"),c.onabort=u(null,"Abort"),s&&(o(a,"X-Requested-With","XMLHttpRequest"),o(a,"Content-Type","application/x-www-form-urlencoded"));for(var p,f=0,v=r.length;v>f;f++)p=r[f],void 0!==e[p]&&(c[p]=e[p]);for(var p in a)c.setRequestHeader(p,a[p]);return c.send(s),c}}({},function(){return this}()); // jshint ignore:line
+
+    // deepmerge
+    function deepmerge(e,o){var t=Array.isArray(o),c=t&&[]||{};return t?(e=e||[],c=c.concat(e),o.forEach(function(o,t){"undefined"==typeof c[t]?c[t]=o:"object"==typeof o?c[t]=deepmerge(e[t],o):-1===e.indexOf(o)&&c.push(o)})):(e&&"object"==typeof e&&Object.keys(e).forEach(function(o){c[o]=e[o]}),Object.keys(o).forEach(function(t){c[t]="object"==typeof o[t]&&o[t]&&e[t]?deepmerge(e[t],o[t]):o[t]})),c} // jshint ignore:line
     // jscs: enable
 
     (function () {
@@ -26,19 +29,29 @@
                     '<form id=":namespace:sign-in-form">' +
                         '<input type="email" name="user[email]" id=":namespace:sign-in-email" />' +
                         '<input type="password" name="user[password]" id=":namespace:sign-in-password" />' +
+                        '<:namespace:providers></:namespace:providers>' +
                         '<button type="submit" id=":namespace:sign-in-submit">Sign In</button>' +
                     '</form>' +
                 '</:namespace:content>' +
             '</:namespace:sign-in>';
+        var providerTemplate =
+            '<:namespace:provider>' +
+              '<a class=":namespace:provider-link">' +
+                '<:namespace:provider-name></:namespace:provider-name>' +
+              '</a>' +
+            '</:namespace:provider>';
 
         AuthProviderWidget.prototype = {
             signIn: function (options) {
+                var self = this;
                 options = options === undefined ? {} : options;
                 this._wipeContainer();
                 this._showTemplate('signIn');
-                if (options.beforeRender) {
-                    options.beforeRender(this.container);
-                }
+                this._loadProviders(this.options.signIn.providerTemplate, function () {
+                    if (options.beforeRender) {
+                        options.beforeRender(self.container);
+                    }
+                });
             },
             close: function () {
                 this.container.className = this._ns('hidden');
@@ -49,15 +62,12 @@
                     namespace: 'auth-provider',
                     responseType: 'code',
                     signIn: {
-                        template: signInTemplate
+                        template: signInTemplate,
+                        providerTemplate: providerTemplate
                     }
                 }; // defaults
 
-                for (o in options) {
-                    if (options.hasOwnProperty(o)) {
-                        this.options[o] = options[o];
-                    }
-                }
+                this.options = deepmerge(this.options, options);
                 if (!this.options.domain) {
                     throw 'Missing "domain" parameter!';
                 }
@@ -90,6 +100,42 @@
                             cors: true,
                             withCredentials: true
                         });
+                    }
+                });
+            },
+            _loadProviders: function (template, callback) {
+                var self = this;
+                var providersContainer = this.container.querySelector(this._ns('providers'));
+                callback = callback === undefined ? function () {} : callback;
+                if (!providersContainer) {
+                    callback();
+                    return;
+                }
+                this._ajax({
+                    url: '/widget?response_type=' + this.options.responseType,
+                    body: 'client_id=' + this.options.clientID +
+                          '&redirect_uri=' + self.options.callbackURL +
+                          (this.options.state ? '&state=' + this.options.state : ''),
+                    cors: true,
+                    success: function (response) {
+                        var r, provider, providerItem;
+                        for (r = 0; r < response.providers.length; r += 1) {
+                            provider = response.providers[r];
+                            providerItem = document.createElement('div');
+                            providerItem.innerHTML = template.replace(/:namespace:/g, this._ns());
+                            providerItem = providerItem.querySelector(this._ns('provider'));
+                            providerItem.className = provider.slug;
+                            providerItem.querySelector('.' + this._ns('provider-link'))
+                                        .setAttribute('href', provider.url);
+                            providerItem.querySelector(this._ns('provider-name')).textContent = provider.name;
+                            providersContainer.appendChild(providerItem);
+                        }
+                        self._loading(false);
+                        callback(providersContainer);
+                    },
+                    error: function (response) {
+                        self._loading(false);
+                        callback();
                     }
                 });
             },

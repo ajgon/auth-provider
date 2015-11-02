@@ -46,6 +46,7 @@ module Auth
       allow do
         origins '*'
         resource '/login/*', headers: :any, methods: [:get, :post, :delete, :patch], credentials: true, if: if_callback
+        resource '/widget', headers: :any, methods: [:get, :post, :delete, :patch], credentials: true, if: if_callback
       end
     end
   end

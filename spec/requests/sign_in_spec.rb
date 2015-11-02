@@ -107,6 +107,43 @@ RSpec.describe 'sign in', type: :request do
     end
   end
 
+  context '#google (external source)' do
+    it '#provider and #callback' do
+      app = create(:application)
+      user = app.owner
+      OmniAuth.config.mock_auth[:google_oauth2] =
+        OmniAuth::AuthHash.new(
+          provider: 'google_oauth2',
+          uid: '123456',
+          info: {
+            email: user.email
+          }
+        )
+      Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:google_oauth2]
+
+      get login_provider_url(:google_oauth2, host: "#{app.slug}.test.host"),
+          response_type: 'token', state: 'dummy_state', client_id: app.uid, redirect_uri: app.redirect_uri
+
+      expect(session[:proxy][:response_type]).to eq 'token'
+      expect(session[:proxy][:client_id]).to eq app.uid
+      expect(session[:proxy][:redirect_uri]).to eq app.redirect_uri
+      expect(session[:proxy][:state]).to eq 'dummy_state'
+      expect(response).to redirect_to user_omniauth_authorize_url(:google_oauth2, host: "#{app.slug}.test.host")
+
+      get user_omniauth_callback_url(:google_oauth2, host: "#{app.slug}.test.host")
+      token = Doorkeeper::AccessToken.last
+
+      expect(response).to redirect_to "#{app.redirect_uri}#access_token=#{token.token}&token_type=bearer" \
+                                      "&expires_in=#{token.expires_in}"
+      expect(request.env['warden'].user).to eq user
+      expect(session[:proxy]).to be_falsey
+
+      OmniAuth.config.mock_auth[:google_oauth2] = nil
+      app.destroy
+      user.destroy
+    end
+  end
+
   # OAuth2
   it '#google' do
     OmniAuth.config.mock_auth[:google_oauth2] =
