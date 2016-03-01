@@ -1,37 +1,43 @@
 # frozen_string_literal: true
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def omniauth_provider
-    @token = nil
-    @user = User.from_omniauth(request.env['omniauth.auth'])
-    handle_auth_proxy if session[:proxy]
+    handle_auth_proxy if proxy_session.present?
 
-    sign_in :user, @user
+    sign_in :user, current_resource_owner
     redirect_to @redirect_uri || request.referer || root_path
   end
 
   private
 
   def handle_auth_proxy
-    @token = Doorkeeper::AccessToken.create!(
-      application_id: Application.find_by_uid(session[:proxy]['client_id']).id,
-      resource_owner_id: @user.id,
-      expires_in: Doorkeeper.configuration.access_token_expires_in,
-      scopes: Doorkeeper.configuration.default_scopes.to_a.join(',')
-    )
-    build_redirect_uri
+    request = if response_type_token?
+                Doorkeeper::OAuth::TokenRequest.new(pre_auth, current_resource_owner)
+              else
+                Doorkeeper::OAuth::CodeRequest.new(pre_auth, current_resource_owner)
+              end
+
+    @redirect_uri = request.authorize.redirect_uri
     session.delete(:proxy)
   end
 
-  def build_redirect_uri
-    pre_auth = Doorkeeper::OAuth::PreAuthorization.new(
-      Doorkeeper.configuration,
-      Doorkeeper::OAuth::Client.find(session[:proxy]['client_id']),
-      HashWithIndifferentAccess.new(session[:proxy])
-    )
-    auth = OpenStruct.new(token: @token)
-    is_token = session[:proxy]['response_type'] == 'token'
+  def current_resource_owner
+    User.from_omniauth(request.env['omniauth.auth'])
+  end
 
-    @redirect_uri = Doorkeeper::OAuth::CodeResponse.new(pre_auth, auth, response_on_fragment: is_token).redirect_uri
+  def proxy_session
+    HashWithIndifferentAccess.new(session[:proxy])
+  end
+
+  def pre_auth
+    Doorkeeper::OAuth::PreAuthorization.new(
+      Doorkeeper.configuration,
+      Doorkeeper::OAuth::Client.find(proxy_session[:client_id]),
+      proxy_session
+    )
+  end
+
+  def response_type_token?
+    proxy_session[:response_type] == 'token'
   end
 
   Rails.configuration.omniauth_providers.each do |name, _options|

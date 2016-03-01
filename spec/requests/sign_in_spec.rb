@@ -168,7 +168,7 @@ RSpec.describe 'sign in', type: :request do
         expect(response).to redirect_to user_omniauth_authorize_url(:google_oauth2, host: "#{app.slug}.test.host")
 
         get user_omniauth_callback_url(:google_oauth2, host: "#{app.slug}.test.host")
-        token = Doorkeeper::AccessToken.last
+        token = Doorkeeper::AccessGrant.last
 
         expect(response).to redirect_to "#{app.redirect_uri}?code=#{token.token}&state=dummy_state"
         expect(request.env['warden'].user).to eq user
