@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get '/users/auth/:provider/setup' => 'omniauth#setup'
 
   devise_scope :user do
+    get '/session' => 'session#index'
     post '/login/usernamepassword' => 'login#index', as: 'login'
     post '/login/authorize' => 'login#authorize', as: 'login_authorize'
     get '/login/:provider' => 'login#provider', as: 'login_provider'

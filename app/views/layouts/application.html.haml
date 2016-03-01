@@ -13,6 +13,6 @@
     var widget = new AuthProviderWidget({
       domain: '#{Application.base.slug}.auth.dev',
       clientID: '#{Application.base.uid}',
-      callbackURL: '#{user_omniauth_callback_url(:auth_provider)}',
+      callbackURL: '#{session_url}',
       state: '#{session['omniauth.state'] ||= SecureRandom.hex(24)}'
     });
