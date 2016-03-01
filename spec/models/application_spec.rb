@@ -1,11 +1,12 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe Application, type: :model do
-  it 'should return base app' do
-    expect(Application.base).to eq Application.find_by(base: true)
+  it 'returns base app' do
+    expect(described_class.base).to eq described_class.find_by(base: true)
   end
 
-  it 'should find application basing on callback' do
+  it 'finds application basing on callback' do
     app1 = create(:application, :no_owner)
     app2 = create(:application, :no_owner)
     app3 = create(:application, :no_owner)
@@ -20,21 +21,21 @@ RSpec.describe Application, type: :model do
     app5.update(allowed_cors: "http://test1.com\nhttp://test2.com\nhttp://test3.com")
     app6.update(allowed_cors: "http://other-test.com\nhttp://test.com\nhttp://inner-test.com")
 
-    expect(Application.with_allowed_cors('http://test1.co')).to be_empty
-    expect(Application.with_allowed_cors('ttp://test1.com')).to be_empty
-    expect(Application.with_allowed_cors('http://test2.co')).to be_empty
-    expect(Application.with_allowed_cors('ttp://test2.com')).to be_empty
-    expect(Application.with_allowed_cors('http://test3.co')).to be_empty
-    expect(Application.with_allowed_cors('ttp://test3.com')).to be_empty
-    expect(Application.with_allowed_cors('http://test1.com').map(&:id).sort)
+    expect(described_class.with_allowed_cors('http://test1.co')).to be_empty
+    expect(described_class.with_allowed_cors('ttp://test1.com')).to be_empty
+    expect(described_class.with_allowed_cors('http://test2.co')).to be_empty
+    expect(described_class.with_allowed_cors('ttp://test2.com')).to be_empty
+    expect(described_class.with_allowed_cors('http://test3.co')).to be_empty
+    expect(described_class.with_allowed_cors('ttp://test3.com')).to be_empty
+    expect(described_class.with_allowed_cors('http://test1.com').map(&:id).sort)
       .to eq [app1.id, app4.id, app5.id].sort
-    expect(Application.with_allowed_cors('http://test2.com').map(&:id).sort)
+    expect(described_class.with_allowed_cors('http://test2.com').map(&:id).sort)
       .to eq [app2.id, app4.id, app5.id].sort
-    expect(Application.with_allowed_cors('http://test3.com').map(&:id).sort)
+    expect(described_class.with_allowed_cors('http://test3.com').map(&:id).sort)
       .to eq [app3.id, app5.id].sort
-    expect(Application.with_allowed_cors('http://other-test.com').map(&:id)).to eq [app6.id]
-    expect(Application.with_allowed_cors('http://test.com').map(&:id)).to eq [app6.id]
-    expect(Application.with_allowed_cors('http://inner-test.com').map(&:id)).to eq [app6.id]
+    expect(described_class.with_allowed_cors('http://other-test.com').map(&:id)).to eq [app6.id]
+    expect(described_class.with_allowed_cors('http://test.com').map(&:id)).to eq [app6.id]
+    expect(described_class.with_allowed_cors('http://inner-test.com').map(&:id)).to eq [app6.id]
 
     app1.destroy
     app2.destroy
@@ -44,7 +45,7 @@ RSpec.describe Application, type: :model do
     app6.destroy
   end
 
-  it 'should clean up callback urls' do
+  it 'cleans up callback urls' do
     app = create(:application, :no_owner)
     app.update(allowed_cors: "\nurl\n\r     url\r sdf sdsf url\r\n sdf\na\n f\n")
 
@@ -53,7 +54,7 @@ RSpec.describe Application, type: :model do
     app.destroy
   end
 
-  it 'should add owner to mappings' do
+  it 'adds owner to mappings' do
     app = create(:application, :no_owner)
     user = create(:user)
     app.update(owner: user)

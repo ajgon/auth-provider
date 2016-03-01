@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 after 'development:users' do
   app = Application.new(
     name: 'Test App',

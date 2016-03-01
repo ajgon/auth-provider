@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class OmniauthController < ApplicationController
   # rubocop:disable Metrics/MethodLength
   def setup

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 after 'users' do
   app = Application.new(
     name: 'Auth Provider',

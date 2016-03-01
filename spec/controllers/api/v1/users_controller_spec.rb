@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :controller do
-  it 'should get current user info' do
+  it 'gets current user info' do
     user = create(:user)
     token = double(resource_owner_id: user.id, acceptable?: true)
     allow(controller).to receive(:doorkeeper_token) { token }
@@ -13,7 +14,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   end
 
   context '#widget' do
-    it 'should return bad request if subdomain differs from application id' do
+    it 'returns bad request if subdomain differs from application id' do
       app1 = create(:application)
       app2 = create(:application)
       allow(controller).to receive(:current_application) { app2 }
@@ -29,7 +30,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       app2.destroy
     end
 
-    it 'should return provider data for given application' do
+    it 'returns provider data for given application' do
       app = create(:application)
       provider = GoogleOauth2.create
       provider2 = AuthProvider.create

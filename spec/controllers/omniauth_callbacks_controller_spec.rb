@@ -1,15 +1,17 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe OmniauthCallbacksController, type: :controller do
   include Devise::TestHelpers
 
-  it 'should define all actions for enabled providers' do
-    methods = (OmniauthCallbacksController.new.methods -
+  it 'defines all actions for enabled providers' do
+    methods = (described_class.new.methods -
               Devise::OmniauthCallbacksController.new.methods - [:omniauth_provider]).map(&:to_s)
     expect(methods.sort).to eq Rails.configuration.omniauth_providers.keys.sort
   end
 
-  it 'should return user data for given callback' do
+  # rubocop:disable RSpec/InstanceVariable
+  it 'returns user data for given callback' do
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
       provider: 'google_oauth2',
       uid: '123456',
@@ -25,4 +27,5 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
 
     OmniAuth.config.mock_auth[:google_oauth2] = nil
   end
+  # rubocop:enable RSpec/InstanceVariable
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AddOptionsToApplication < ActiveRecord::Migration
   def change
     add_column :oauth_applications, :allowed_cors, :text

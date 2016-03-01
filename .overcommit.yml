@@ -2,7 +2,8 @@ PreCommit:
   ALL:
     on_warn: fail # Treat all warnings as failures
     exclude:
-      - 'app/assets/javascripts/libs/**/*.js'
+      - 'app/assets/javascripts/lib/**/*.js'
+      - 'app/assets/stylesheets/lib/**/*.css'
   AuthorEmail:
     enabled: true
     required: false
@@ -13,6 +14,16 @@ PreCommit:
     enabled: true
   BrokenSymlinks:
     enabled: true
+  BundleAudit:
+    enabled: true
+    description: 'Run bundle-audit'
+    required_executable: './bin/bundle-audit'
+    flags: ['check', '--update']
+    install_command: 'gem install bundler-audit'
+    include:
+      - 'Gemfile'
+      - 'Gemfile.lock'
+      - '*.gemspec'
   BundleCheck:
     enabled: true
   CaseConflicts:
@@ -62,4 +73,7 @@ PreCommit:
   XmlSyntax:
     enabled: true
   YamlSyntax:
+    enabled: true
+PrePush:
+  RSpec:
     enabled: true

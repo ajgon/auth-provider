@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def omniauth_provider
     @token = nil

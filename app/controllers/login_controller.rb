@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class LoginController < Devise::SessionsController
   include Doorkeeper::Helpers::Controller
 
@@ -8,7 +9,7 @@ class LoginController < Devise::SessionsController
   def index
     params[:response_type] ||= 'code'
 
-    fail pre_auth.error_response.body.to_s unless pre_auth.authorizable?
+    raise pre_auth.error_response.body.to_s unless pre_auth.authorizable?
     valid_request = validates_devise_authentication?
     crypt = ActiveSupport::MessageEncryptor.new(Rails.application.secrets.secret_key_base)
     @session_data = crypt.encrypt_and_sign(session.to_hash.to_json)

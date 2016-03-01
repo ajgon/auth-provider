@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreateOauthApplicationUsers < ActiveRecord::Migration
   def change
     create_table :oauth_application_users do |t|
