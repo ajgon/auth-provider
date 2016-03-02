@@ -6,7 +6,7 @@ FactoryGirl.define do
       client_id 'google_oauth2_client_id'
       client_secret 'google_oauth2_client_secret'
       enabled true
-      association :application
+      applications { [create(:application)] }
     end
 
     trait :facebook do
@@ -14,7 +14,7 @@ FactoryGirl.define do
       client_id 'facebook_client_id'
       client_secret 'facebook_client_secret'
       enabled true
-      association :application
+      applications { [create(:application)] }
     end
 
     trait :twitter do
@@ -22,7 +22,7 @@ FactoryGirl.define do
       client_id 'twitter_client_id'
       client_secret 'twitter_client_secret'
       enabled true
-      association :application
+      applications { [create(:application)] }
     end
 
     trait :github do
@@ -30,7 +30,7 @@ FactoryGirl.define do
       client_id 'github_client_id'
       client_secret 'github_client_secret'
       enabled true
-      association :application
+      applications { [create(:application)] }
     end
 
     trait :instagram do
@@ -38,7 +38,7 @@ FactoryGirl.define do
       client_id 'instagram_client_id'
       client_secret 'instagram_client_secret'
       enabled true
-      association :application
+      applications { [create(:application)] }
     end
 
     trait :linkedin do
@@ -46,7 +46,7 @@ FactoryGirl.define do
       client_id 'linkedin_client_id'
       client_secret 'linkedin_client_secret'
       enabled true
-      association :application
+      applications { [create(:application)] }
     end
   end
 end

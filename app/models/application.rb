@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class Application < Doorkeeper::Application
-  has_many :providers
+  has_many :application_providers
+  has_many :providers, through: :application_providers
   has_many :oauth_application_users, foreign_key: :oauth_application_id, dependent: :destroy
   has_many :users, through: :oauth_application_users
 
@@ -39,7 +40,7 @@ class Application < Doorkeeper::Application
   end
 
   def add_auth_provider
-    return if id.present? && AuthProvider.exists?(application_id: id)
+    return if id.present?
     providers.push(AuthProvider.new(enabled: true, client_id: uid, client_secret: secret))
   end
 end

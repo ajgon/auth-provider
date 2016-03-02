@@ -59,10 +59,10 @@ RSpec.describe Application, type: :model do
     provider = create(:provider, :facebook)
     provider.reload
 
-    expect(provider.application.providers.size).to eq 2
-    expect(provider.application.providers.map(&:type).sort).to eq %w(AuthProvider Facebook)
-    expect(provider.application.external_providers.size).to eq 1
-    expect(provider.application.external_providers.map(&:type).sort).to eq %w(Facebook)
+    expect(provider.applications.first.providers.size).to eq 2
+    expect(provider.applications.first.providers.map(&:type).sort).to eq %w(AuthProvider Facebook)
+    expect(provider.applications.first.external_providers.size).to eq 1
+    expect(provider.applications.first.external_providers.map(&:type).sort).to eq %w(Facebook)
   end
 
   it 'cleans up callback urls' do

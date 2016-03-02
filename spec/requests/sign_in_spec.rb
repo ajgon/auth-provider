@@ -191,7 +191,7 @@ RSpec.describe 'sign in', type: :request do
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:google_oauth2]
     provider = create(:provider, :google_oauth2)
 
-    get user_omniauth_authorize_url(:google_oauth2, host: "#{provider.application.slug}.test.host")
+    get user_omniauth_authorize_url(:google_oauth2, host: "#{provider.applications.first.slug}.test.host")
 
     expect(response).to redirect_to(user_omniauth_callback_path(action: 'google_oauth2'))
     expect(request.env['omniauth.auth'].provider).to eq 'google_oauth2'
@@ -212,7 +212,7 @@ RSpec.describe 'sign in', type: :request do
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:twitter]
     provider = create(:provider, :twitter)
 
-    get user_omniauth_authorize_url(:twitter, host: "#{provider.application.slug}.test.host")
+    get user_omniauth_authorize_url(:twitter, host: "#{provider.applications.first.slug}.test.host")
 
     expect(response).to redirect_to(user_omniauth_callback_path(action: 'twitter'))
     expect(request.env['omniauth.auth'].provider).to eq 'twitter'

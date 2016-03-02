@@ -11,7 +11,7 @@ RSpec.describe OmniauthController, type: :controller do
 
   context '#setup' do
     before(:each) do
-      @request.host = "#{provider.application.slug}.#{request.domain}"
+      @request.host = "#{provider.applications.first.slug}.#{request.domain}"
       @request.env['omniauth.strategy'] = OpenStruct.new(options: {})
     end
 
