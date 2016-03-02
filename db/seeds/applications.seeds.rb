@@ -2,9 +2,8 @@
 after 'users' do
   app = Application.new(
     name: 'Auth Provider',
-    redirect_uri: Rails.application.routes.url_helpers.user_omniauth_callback_url(
-      :auth_provider,
-      ActionMailer::Base.default_url_options
+    redirect_uri: Rails.application.routes.url_helpers.session_url(
+      ActionMailer::Base.default_url_options.merge(subdomain: :app)
     ),
     base: true
   )

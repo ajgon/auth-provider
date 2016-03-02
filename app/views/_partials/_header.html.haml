@@ -1,0 +1,15 @@
+.app-header.mdl-layout__header.mdl-layout__header--waterfall
+  .mdl-layout__header-row
+    %span.app-title.mdl-layout-title
+      %a{ href: root_url }
+        = image_tag('logo-small.png', class: 'app-logo-image')
+    .app.header-spacer.mdl-layout-spacer
+    .app-navigation-container
+      .app-navigation.mdl-navigation
+        - if user_signed_in?
+          %a.mdl-navigation__link.mdl-typography--text-uppercase{ href: admin_dashboard_url } Dashboard
+        - else
+          %a.app-sign-in.mdl-navigation__link.mdl-typography--text-uppercase{ href: '#' } Sign In
+    %span.app-mobile-title.mdl-layout-title
+      %a{ href: root_url }
+        = image_tag('logo-small.png', class: 'app-logo-image')

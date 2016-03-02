@@ -13,3 +13,172 @@
  *= require 'lib/material'
  *= require_self
  */
+
+body {
+    margin: 0;
+    background: #f3f3f3;
+}
+
+/* Disable ugly boxes around images in IE10 */
+a img{
+    border: 0px;
+}
+
+::-moz-selection {
+    background-color: #6ab344;
+    color: #fff;
+}
+
+::selection {
+    background-color: #6ab344;
+    color: #fff;
+}
+
+.app-search-box .mdl-textfield__input {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.app-header .mdl-menu__container {
+    z-index: 50;
+    margin: 0 !important;
+}
+
+
+.mdl-textfield--expandable {
+    width: auto;
+}
+
+.app-fab {
+    position: absolute;
+    right: 20%;
+    bottom: -26px;
+    z-index: 3;
+    background: #64ffda !important;
+    color: black !important;
+}
+
+.app-mobile-title {
+    display: none !important;
+}
+
+
+.app-logo-image {
+    height: 28px;
+    width: 140px;
+}
+
+
+.app-header {
+    overflow: visible;
+    background-color: white;
+}
+
+.app-header .material-icons {
+    color: #767777 !important;
+}
+
+.app-header .mdl-layout__drawer-button {
+    background: transparent;
+    color: #767777;
+}
+
+.app-header .mdl-navigation__link {
+    color: #757575;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.app-navigation-container {
+    /* Simple hack to make the overflow happen to the left instead... */
+    direction: rtl;
+    order: 1;
+    width: 500px;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-navigation {
+    /* ... and now make sure the content is actually LTR */
+    direction: ltr;
+    justify-content: flex-end;
+    width: 800px;
+}
+
+.app-search-box.is-focused + .app-navigation-container {
+    opacity: 0;
+    width: 100px;
+}
+
+
+.app-navigation .mdl-navigation__link {
+    display: inline-block;
+    height: 60px;
+    line-height: 68px;
+    background-color: transparent !important;
+    border-bottom: 4px solid transparent;
+}
+
+.app-navigation .mdl-navigation__link:hover {
+    border-bottom: 4px solid #8bc34a;
+}
+
+.app-search-box {
+    order: 2;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.app-more-button {
+    order: 3;
+}
+
+.app-dialog {
+    min-width: 600px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    padding: 1em;
+    background: white;
+    color: black;
+    top: 30%;
+}
+
+.app-centered-layout {
+    align-items: center;
+    justify-content: center;
+}
+
+.app-loading-container {
+    padding: 30px 0;
+}
+
+/**** Mobile layout ****/
+@media (max-width: 900px) {
+    .app-navigation-container {
+        display: none;
+    }
+
+    .app-title {
+        display: none !important;
+    }
+
+    .app-mobile-title {
+        display: block !important;
+        position: absolute;
+        left: calc(50% - 70px);
+        top: 12px;
+        transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* WebViews in iOS 9 break the "~" operator, and WebViews in OS X 10.10 break
+       consecutive "+" operators in some cases. Therefore, we need to use both
+       here to cover all the bases. */
+    .android.app-search-box.is-focused ~ .app-mobile-title,
+    .app-search-box.is-focused + .app-navigation-container + .app-mobile-title {
+        opacity: 0;
+    }
+
+}

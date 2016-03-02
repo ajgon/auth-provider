@@ -1,18 +1,72 @@
 !!! 5
-/[if IE 8 ]    <html lang="en" class="no-js ie8 oldie">
-/[if IE 9 ]    <html lang="en" class="no-js ie9 oldie">
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+%html
 %head
-  %title Auth
-  = stylesheet_link_tag 'application', media: 'all'
+  %title AuthProvider
+  %meta{ charset: 'utf-8' }
+  %meta{ 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }
+  %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1' }
+  %meta{ name: 'mobile-web-app-channels', content: 'yes' }
   = csrf_meta_tags
+
+  = stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en', media: 'all'
+  = stylesheet_link_tag 'https://fonts.googleapis.com/icon?family=Material+Icons', media: 'all'
+  = stylesheet_link_tag 'application', media: 'all'
 %body
-  = yield
+  .app-layout.mdl-layout.mdl-js-layout.mdl-layout--fixed-header
+    = render '_partials/header'
+    = yield
+
   = javascript_include_tag 'application'
   :javascript
     var widget = new AuthProviderWidget({
       domain: '#{Application.base.slug}.auth.dev',
       clientID: '#{Application.base.uid}',
       callbackURL: '#{Application.base.redirect_uri}',
-      state: '#{session['omniauth.state'] ||= SecureRandom.hex(24)}'
+      state: '#{session['omniauth.state'] ||= SecureRandom.hex(24)}',
+      signIn: {
+        providerTemplate:
+          '<:namespace:provider>' +
+            '<a class=":namespace:provider-link">' +
+              'Sign in using <:namespace:provider-name></:namespace:provider-name>' +
+            '</a>' +
+          '</:namespace:provider>',
+        template:
+          '<div class="app-dialog mdl-dialog">' +
+            '<h4 class="mdl-dialog__title">Sign In</h4>' +
+            '<:namespace:loading>' +
+              '<div class="mdl-layout app-centered-layout app-loading-container">' +
+                '<div class="mdl-spinner mdl-js-spinner is-active"></div>' +
+              '</div>' +
+            '</:namespace:loading>' +
+            '<:namespace:content>' +
+              '<form id=":namespace:sign-in-form">' +
+                '<div class="mdl-dialog__content">' +
+                  '<:namespace:message-container>' +
+                    '<:namespace:message></:namespace:message>' +
+                  '</:namespace:message-container>' +
+                  '<div class="mdl-grid">' +
+                    '<div class="mdl-cell mdl-cell--6-col">' +
+                      '<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">' +
+                        '<input type="text" name="user[email]" id=":namespace:sign-in-email" class="mdl-textfield__input">' +
+                        '<label class="mdl-textfield__label" for=":namespace:sign-in-email">E-Mail</label>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div class="mdl-cell mdl-cell--6-col">' +
+                      '<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">' +
+                        '<input type="password" name="user[password]" id=":namespace:sign-in-password" class="mdl-textfield__input">' +
+                        '<label class="mdl-textfield__label" for=":namespace:sign-in-password">Password</label>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<:namespace:providers></:namespace:providers>' +
+                '</div>' +
+                '<div class="mdl-dialog__actions">' +
+                  '<button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">' +
+                    'Sign In' +
+                  '</button>' +
+                '</div>' +
+              '</form>' +
+            '</:namespace:content>' +
+          '</div>'
+      }
     });

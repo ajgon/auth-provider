@@ -1,0 +1,30 @@
+.admin-drawer.mdl-layout__drawer.mdl-color--blue-grey-900.mdl-color-text--blue-grey-50
+  %header.admin-drawer-header
+    = image_tag current_user.avatar_url.presence || 'default-avatar.jpg', class: 'admin-avatar'
+    .admin-avatar-dropdown
+      %span= current_user.email
+      .mdl-layout-spacer
+      %button#accbtn.mdl-button.mdl-js-button.mdl-js-ripple-effect.mdl-button--icon
+        %i.material-icons{ role: :presentation } arrow_drop_down
+        %span.visuallyhidden Accounts
+      %ul.mdl-menu.mdl-menu--bottom-right.mdl-js-menu.mdl-js-ripple-effect.mdl-button--icon{ for: :accbtn }
+        %li.mdl-menu__item Account Settings
+        %li.mdl-menu__item
+          = link_to 'Sign Out', destroy_user_session_path
+  %nav.admin-navigation.mdl-navigation.mdl-color--blue-grey-800
+    %a.mdl-navigation__link{ href: admin_dashboard_path }
+      %i.mdl-color-text--blue-grey-400.material-icons{ role: :presentation }
+        dashboard
+      Dashboard
+    %a.mdl-navigation__link{ href: admin_dashboard_path }
+      %i.mdl-color-text--blue-grey-400.material-icons{ role: :presentation }
+        apps
+      Applications
+    %a.mdl-navigation__link{ href: admin_dashboard_path }
+      %i.mdl-color-text--blue-grey-400.material-icons{ role: :presentation }
+        share
+      Providers
+    %a.mdl-navigation__link{ href: admin_dashboard_path }
+      %i.mdl-color-text--blue-grey-400.material-icons{ role: :presentation }
+        group
+      Users

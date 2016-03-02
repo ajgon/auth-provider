@@ -1,0 +1,20 @@
+!!! 5
+%html
+%head
+  %title AuthProvider Dashboard
+  %meta{ charset: 'utf-8' }
+  %meta{ 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }
+  %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1' }
+  %meta{ name: 'mobile-web-app-channels', content: 'yes' }
+  = csrf_meta_tags
+
+  = stylesheet_link_tag 'https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en', media: 'all'
+  = stylesheet_link_tag 'https://fonts.googleapis.com/icon?family=Material+Icons', media: 'all'
+  = stylesheet_link_tag 'admin', media: 'all'
+%body
+  .admin-layout.mdl-layout.mdl-js-layout.mdl-layout--fixed-drawer.mdl-layout--fixed-header
+    = render 'admin/_partials/header', title: 'Dashboard'
+    = render 'admin/_partials/sidebar_menu'
+    = yield
+
+  = javascript_include_tag 'admin'

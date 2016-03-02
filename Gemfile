@@ -21,6 +21,7 @@ gem 'rack-cors'
 gem 'stringex'
 gem 'has_secure_token'
 gem 'activerecord-session_store'
+gem 'cancancan'
 
 group :development, :test do
   gem 'rspec'
@@ -34,6 +35,7 @@ group :development, :test do
   gem 'binding_of_caller'
   gem 'seedbank'
   gem 'powder'
+  gem 'quiet_assets'
 
   # Code quality
   gem 'brakeman', require: false

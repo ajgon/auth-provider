@@ -1,0 +1,10 @@
+%header.admin-header.mdl-layout__header.mdl-color--grey-100.mdl-color-text--grey-600
+  .mdl-layout__header-row
+    %span.mdl-layout-title= title || 'Home'
+    .mdl-layout-spacer
+    %button#hdrbtn.mdl-button.mdl-js-button.mdl-js-ripple-effect.mdl-button--icon
+      %i.material-icons notifications
+    %button#hdrbtn.mdl-button.mdl-js-button.mdl-js-ripple-effect.mdl-button--icon
+      %i.material-icons more_vert
+    %ul.mdl-menu.mdl-js-menu.mdl-js-ripper-effect.mdl-menu--bottom-right{ for: :hdrbtn }
+      %li.mdl-menu__item Test

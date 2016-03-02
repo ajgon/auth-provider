@@ -2,7 +2,6 @@
 Rails.application.routes.draw do
   use_doorkeeper
   devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks' } # , sessions: 'sessions' }
-  root 'home#index'
 
   get '/users/auth/:provider/setup' => 'omniauth#setup'
 
@@ -20,6 +19,15 @@ Rails.application.routes.draw do
     end
   end
 
+  constraints subdomain: 'app' do
+    get '/' => 'admin/dashboard#index', as: 'admin_dashboard'
+    devise_scope :user do
+      get '/session' => 'session#index'
+    end
+  end
+
   post '/widget' => 'api/v1/users#widget'
   get '/userinfo' => 'api/v1/users#me'
+
+  root 'home#index'
 end

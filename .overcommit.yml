@@ -37,6 +37,8 @@ PreCommit:
     exclude:
       - '**/*.svg'
       - '**/*.json'
+      - 'app/assets/javascripts/lib/**/*.js'
+      - 'app/assets/stylesheets/lib/**/*.css'
   ImageOptim:
     enabled: true
   JsHint:

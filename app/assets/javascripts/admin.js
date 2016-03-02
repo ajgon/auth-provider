@@ -10,8 +10,5 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require widget
-//= require lib/material
-//= require lib/jquery
-//= require session
+//= require 'lib/material'
 //= require_self
