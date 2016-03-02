@@ -16,4 +16,8 @@ class User < ActiveRecord::Base
       user.password = Devise.friendly_token[0, 20]
     end
   end
+
+  def owned_applications
+    Application.where(owner: self)
+  end
 end

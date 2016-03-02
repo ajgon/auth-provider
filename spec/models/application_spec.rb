@@ -45,6 +45,26 @@ RSpec.describe Application, type: :model do
     app6.destroy
   end
 
+  it 'adds AuthProvider by default' do
+    app = create(:application, :no_owner)
+
+    expect(app.providers.size).to eq 1
+    expect(app.providers.first.type).to eq 'AuthProvider'
+    expect(app.providers.first.enabled).to be_truthy
+    expect(app.providers.first.client_id).to eq app.uid
+    expect(app.providers.first.client_secret).to eq app.secret
+  end
+
+  it 'returns external providers' do
+    provider = create(:provider, :facebook)
+    provider.reload
+
+    expect(provider.application.providers.size).to eq 2
+    expect(provider.application.providers.map(&:type).sort).to eq %w(AuthProvider Facebook)
+    expect(provider.application.external_providers.size).to eq 1
+    expect(provider.application.external_providers.map(&:type).sort).to eq %w(Facebook)
+  end
+
   it 'cleans up callback urls' do
     app = create(:application, :no_owner)
     app.update(allowed_cors: "\nurl\n\r     url\r sdf sdsf url\r\n sdf\na\n f\n")

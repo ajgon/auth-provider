@@ -9,5 +9,4 @@ after 'development:users' do
   )
   app.owner = User.find_by_email('testapp@example.com')
   app.save!
-  AuthProvider.create!(application_id: app.id, enabled: true, client_id: app.uid, client_secret: app.secret)
 end

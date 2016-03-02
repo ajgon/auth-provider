@@ -26,4 +26,17 @@ RSpec.describe User, type: :model do
     expect(user.last_name).to eq 'Last'
     expect(user.avatar_url).to eq 'avatar'
   end
+
+  it 'returns owned application only' do
+    extra_app = create(:application, :no_owner)
+    app = create(:application)
+    app.owner.applications.push(extra_app)
+    app.owner.save
+    app.reload
+
+    expect(app.owner.applications.size).to eq 2
+    expect(app.owner.applications.map(&:id).sort).to eq [app.id, extra_app.id].sort
+    expect(app.owner.owned_applications.size).to eq 1
+    expect(app.owner.owned_applications.first).to eq app
+  end
 end
