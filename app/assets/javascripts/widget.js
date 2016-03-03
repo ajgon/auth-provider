@@ -84,6 +84,8 @@
                     parent = document.createElement(parentTag);
                     parent.className = 'auth-provider-hidden';
                     this.container = document.body.appendChild(parent);
+                } else {
+                    this.container = document.querySelector('body > ' + parentTag);
                 }
             },
             _initEvents: function () {
