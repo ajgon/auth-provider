@@ -71,11 +71,11 @@
                 if (!this.options.domain) {
                     throw 'Missing "domain" parameter!';
                 }
-                if (!this.options.callbackURL) {
-                    throw 'Missing "callbackURL" parameter!';
+                if (!this.options.callbackUrl) {
+                    throw 'Missing "callbackUrl" parameter!';
                 }
-                if (!this.options.clientID) {
-                    throw 'Missing "clientID" parameter!';
+                if (!this.options.clientId) {
+                    throw 'Missing "clientId" parameter!';
                 }
             },
             _initDOM: function () {
@@ -96,8 +96,8 @@
                         self._ajax({
                             url: '/login/usernamepassword?response_type=' + self.options.responseType,
                             method: 'POST',
-                            body: serialize(e.target) + '&client_id=' + self.options.clientID +
-                                  '&redirect_uri=' + self.options.callbackURL +
+                            body: serialize(e.target) + '&client_id=' + self.options.clientId +
+                                  '&redirect_uri=' + self.options.callbackUrl +
                                   (self.options.state ? '&state=' + self.options.state : ''),
                             cors: true,
                             withCredentials: true
@@ -115,8 +115,8 @@
                 }
                 this._ajax({
                     url: '/widget?response_type=' + this.options.responseType,
-                    body: 'client_id=' + this.options.clientID +
-                          '&redirect_uri=' + self.options.callbackURL +
+                    body: 'client_id=' + this.options.clientId +
+                          '&redirect_uri=' + self.options.callbackUrl +
                           (this.options.state ? '&state=' + this.options.state : ''),
                     cors: true,
                     success: function (response) {
