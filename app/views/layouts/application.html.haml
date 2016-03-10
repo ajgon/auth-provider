@@ -20,8 +20,8 @@
   :javascript
     var widget = new AuthProviderWidget({
       domain: '#{Application.base.slug}.auth.dev',
-      clientID: '#{Application.base.uid}',
-      callbackURL: '#{Application.base.redirect_uri}',
+      clientId: '#{Application.base.uid}',
+      callbackUrl: '#{Application.base.redirect_uri}',
       state: '#{session['omniauth.state'] ||= SecureRandom.hex(24)}',
       signIn: {
         providerTemplate:
